@@ -1,41 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PitchBuilder</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Adăugăm biblioteca jsPDF -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PitchBuilder</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.1.2/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+    </style>
 </head>
-<body class="bg-gray-50">
+<body class="bg-gray-100">
 
-  <!-- Secțiunea cu întrebările -->
-  <div id="questionContainer" class="text-center mt-6">
-    <h1 class="text-3xl font-bold">Answer the questions to create your pitch</h1>
-    <div id="questionText" class="mt-4 text-xl">First question goes here...</div>
-    <textarea id="userAnswer" class="mt-2 p-2 border rounded w-full" rows="4"></textarea>
-    <button id="nextBtn" class="mt-4 bg-blue-500 text-white py-2 px-4 rounded">Next</button>
-  </div>
+    <!-- Header -->
+    <header class="bg-blue-600 text-white p-4 flex justify-between items-center">
+        <div class="flex items-center">
+            <img src="logo.png" alt="PitchBuilder Logo" class="h-10 mr-4">
+            <h1 class="text-2xl font-semibold">PitchBuilder</h1>
+        </div>
+        <button id="resetBtn" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-700">Reset</button>
+    </header>
 
-  <!-- Secțiunea de rezultate -->
-  <div id="resultSection" class="text-left mt-6 hidden bg-gray-100 p-6 rounded-lg shadow-lg max-w-2xl mx-auto">
-    <h2 class="text-2xl font-semibold mb-4">Your Pitch</h2>
-    <pre id="pitchOutput" class="whitespace-pre-wrap text-lg text-gray-700"></pre>
-    <!-- Adăugăm un buton pentru export PDF -->
-    <button id="exportPdfBtn" class="mt-4 bg-green-500 text-white py-2 px-6 rounded-lg shadow-lg hover:bg-green-600 transition-all">
-      Export as PDF
-    </button>
-  </div>
+    <!-- Main content -->
+    <div class="container mx-auto p-6">
+        <!-- Questions Section -->
+        <div id="questionsSection" class="bg-white shadow-lg rounded-lg p-6 mb-6">
+            <h2 class="text-xl font-semibold mb-4">Completează întrebările pentru a-ți crea pitch-ul</h2>
 
-  <!-- Secțiunea pentru butonul de resetare -->
-  <div id="resetSection" class="text-center mt-6 hidden">
-    <button id="resetBtn" class="bg-red-500 text-white py-2 px-6 rounded-lg shadow-lg hover:bg-red-600 transition-all">
-      Reset Pitch
-    </button>
-  </div>
+            <form id="questionsForm" class="space-y-4">
+                <div class="flex flex-col">
+                    <label for="question1" class="font-medium">1. Care este scopul afacerii tale?</label>
+                    <input type="text" id="question1" class="p-3 border border-gray-300 rounded-md" placeholder="Scopul afacerii tale">
+                </div>
 
-  <script src="app.js"></script>
+                <div class="flex flex-col">
+                    <label for="question2" class="font-medium">2. Cine sunt clienții tăi țintă?</label>
+                    <input type="text" id="question2" class="p-3 border border-gray-300 rounded-md" placeholder="Descrierea clienților țintă">
+                </div>
 
+                <div class="flex flex-col">
+                    <label for="question3" class="font-medium">3. Care este valoarea principală pe care o oferi?</label>
+                    <input type="text" id="question3" class="p-3 border border-gray-300 rounded-md" placeholder="Valoarea principală oferită">
+                </div>
+
+                <div class="flex flex-col">
+                    <label for="question4" class="font-medium">4. Care sunt principalele tale beneficii?</label>
+                    <input type="text" id="question4" class="p-3 border border-gray-300 rounded-md" placeholder="Beneficiile afacerii tale">
+                </div>
+
+                <div class="flex flex-col">
+                    <label for="question5" class="font-medium">5. Ce resurse ai pentru a dezvolta afacerea?</label>
+                    <input type="text" id="question5" class="p-3 border border-gray-300 rounded-md" placeholder="Resursele afacerii tale">
+                </div>
+
+                <div class="flex justify-center mt-6">
+                    <button type="submit" class="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600">Generează Pitch</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Result Section -->
+        <div id="resultSection" class="bg-white shadow-lg rounded-lg p-6 mb-6 hidden">
+            <h2 class="text-xl font-semibold mb-4">Pitch-ul tău:</h2>
+            <div id="pitchResult" class="text-lg text-gray-700 mb-4"></div>
+            <div class="flex justify-center">
+                <button id="exportBtn" class="bg-blue-500 text-white px-6 py-3 rounded-lg hover:bg-blue-600">Exportă în PDF</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white p-4 text-center">
+        <p>&copy; 2025 PitchBuilder. Toate drepturile rezervate.</p>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        const { jsPDF } = window.jspdf;
+
+        // Dom elements
+        const questionsSection = document.getElementById("questionsSection");
+        const resultSection = document.getElementById("resultSection");
+        const resetBtn = document.getElementById("resetBtn");
+        const questionsForm = document.getElementById("questionsForm");
+        const exportBtn = document.getElementById("exportBtn");
+        const pitchResult = document.getElementById("pitchResult");
+
+        // Handle form submission and generate pitch
+        questionsForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            // Get the values from the form
+            const question1 = document.getElementById("question1").value;
+            const question2 = document.getElementById("question2").value;
+            const question3 = document.getElementById("question3").value;
+            const question4 = document.getElementById("question4").value;
+            const question5 = document.getElementById("question5").value;
+
+            // Generate the pitch
+            const pitchText = `
+                1. Scopul afacerii tale: ${question1}\n
+                2. Clienții țintă: ${question2}\n
+                3. Valoarea principală: ${question3}\n
+                4. Beneficiile afacerii: ${question4}\n
+                5. Resursele disponibile: ${question5}
+            `;
+
+            // Display the result
+            pitchResult.textContent = pitchText;
+            resultSection.classList.remove("hidden");
+            questionsSection.classList.add("hidden");
+        });
+
+        // Export pitch to PDF
+        exportBtn.addEventListener("click", () => {
+            const doc = new jsPDF();
+            doc.text(pitchResult.textContent, 10, 10);
+            doc.save("pitch.pdf");
+        });
+
+        // Reset the form and result
+        resetBtn.addEventListener("click", () => {
+            questionsForm.reset();
+            pitchResult.textContent = "";
+            resultSection.classList.add("hidden");
+            questionsSection.classList.remove("hidden");
+        });
+    </script>
 </body>
 </html>
