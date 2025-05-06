@@ -1,27 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <div class="text-center mb-4">
-    <img src="https://img.icons8.com/external-flaticons-lineal-color-flat-icons/64/000000/external-startup-startup-flaticons-lineal-color-flat-icons.png" alt="logo" class="mx-auto mb-2" />
-    <h1 class="text-3xl font-bold text-blue-700">PitchBuilder</h1>
-    <p class="text-gray-500">Your startup pitch in minutes</p>
-  </div>  
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PitchBuilder</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Adăugăm biblioteca jsPDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
-<body>
-  <div class="container">
-    <h1>PitchBuilder</h1>
-    <div id="question-container"></div>
-    <textarea id="answer" placeholder="Type your answer here..."></textarea>
-    <button id="next-btn">Next</button>
-    <div id="result" style="display: none;">
-      <h2>Your Pitch</h2>
-      <pre id="pitch-output"></pre>
-      <button onclick="window.print()">Export as PDF</button>
-    </div>
+<body class="bg-gray-50">
+
+  <!-- Secțiunea cu întrebările -->
+  <div id="questionContainer" class="text-center mt-6">
+    <h1 class="text-3xl font-bold">Answer the questions to create your pitch</h1>
+    <div id="questionText" class="mt-4 text-xl">First question goes here...</div>
+    <textarea id="userAnswer" class="mt-2 p-2 border rounded w-full" rows="4"></textarea>
+    <button id="nextBtn" class="mt-4 bg-blue-500 text-white py-2 px-4 rounded">Next</button>
   </div>
+
+  <!-- Secțiunea de rezultate -->
+  <div id="resultSection" class="text-left mt-6 hidden bg-gray-100 p-6 rounded-lg shadow-lg max-w-2xl mx-auto">
+    <h2 class="text-2xl font-semibold mb-4">Your Pitch</h2>
+    <pre id="pitchOutput" class="whitespace-pre-wrap text-lg text-gray-700"></pre>
+    <!-- Adăugăm un buton pentru export PDF -->
+    <button id="exportPdfBtn" class="mt-4 bg-green-500 text-white py-2 px-6 rounded-lg shadow-lg hover:bg-green-600 transition-all">
+      Export as PDF
+    </button>
+  </div>
+
+  <!-- Secțiunea pentru butonul de resetare -->
+  <div id="resetSection" class="text-center mt-6 hidden">
+    <button id="resetBtn" class="bg-red-500 text-white py-2 px-6 rounded-lg shadow-lg hover:bg-red-600 transition-all">
+      Reset Pitch
+    </button>
+  </div>
+
   <script src="app.js"></script>
+
 </body>
 </html>
