@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PitchBuilder</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>PitchBuilder</h1>
+    <div id="question-container"></div>
+    <textarea id="answer" placeholder="Type your answer here..."></textarea>
+    <button id="next-btn">Next</button>
+    <div id="result" style="display: none;">
+      <h2>Your Pitch</h2>
+      <pre id="pitch-output"></pre>
+      <button onclick="window.print()">Export as PDF</button>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
